@@ -1,0 +1,28 @@
+{
+  "name": "tech-dirty-to-me",
+  "version": "1.0.0",
+  "description": "Tech blog for sharing what you have learned and solid resources.",
+  "main": "server.js",
+  "start": "node server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EACrook/Tech-Dirty-To-Me.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EACrook/Tech-Dirty-To-Me/issues"
+  },
+  "homepage": "https://github.com/EACrook/Tech-Dirty-To-Me#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.6.2"
+  }
+}
