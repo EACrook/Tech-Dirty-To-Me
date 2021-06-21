@@ -3,7 +3,8 @@ const sequelize = require('../../config/connection');
 const {
     Post,
     User,
-    Vote
+    Vote,
+    Comment
 } = require('../../models');
 
 // get all posts
@@ -15,9 +16,18 @@ router.get('/', (req, res) => {
                 ['created_at', 'DESC']
             ],
             include: [{
-                model: User,
-                attributes: ['username']
-            }]
+                    model: Comment,
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                    include: {
+                        model: User,
+                        attributes: ['username']
+                    }
+                },
+                {
+                    model: User,
+                    attributes: ['username']
+                }
+            ]
         })
         .then(dbPostData => res.json(dbPostData))
         .catch(err => {
@@ -70,13 +80,15 @@ router.post('/', (req, res) => {
 
 // PUT /api/posts/upvote
 router.put('/upvote', (req, res) => {
-    Post.upvote(req.body, { Vote })
-      .then(updatedVoteData => res.json(updatedVoteData))
-      .catch(err => {
-        console.log('err', err);
-        res.status(500).json(err);
-      });
-  });
+    Post.upvote(req.body, {
+            Vote
+        })
+        .then(updatedVoteData => res.json(updatedVoteData))
+        .catch(err => {
+            console.log('err', err);
+            res.status(500).json(err);
+        });
+});
 
 // update a post title
 router.put('/:id', (req, res) => {
