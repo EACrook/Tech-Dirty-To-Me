@@ -3,12 +3,13 @@ const sequelize = require('../../config/connection');
 const {
     Post,
     User,
-    Comment
+    Comment,
+    Vote
 } = require('../../models');
 
 // get all posts
 router.get('/', (req, res) => {
-    console.log('----HERE IS YOUR POSTS-----');
+    console.log('----HERE ARE YOUR POSTS-----');
     Post.findAll({
             attributes: ['id', 'title', 'post', 'reference_url', 'created_at', [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']],
             order: [
@@ -41,11 +42,27 @@ router.get('/:id', (req, res) => {
             where: {
                 id: req.params.id
             },
-            attributes: ['id', 'title', 'post', 'reference_url', 'created_at', [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']],
+            attributes: [
+                'id',
+                'title',
+                'post',
+                'reference_url',
+                'created_at',
+                [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
+            ],
             include: [{
-                model: User,
-                attributes: ['username']
-            }]
+                    model: Comment,
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                    include: {
+                        model: User,
+                        attributes: ['username']
+                    }
+                },
+                {
+                    model: User,
+                    attributes: ['username']
+                }
+            ]
         })
         .then(dbPostData => {
             if (!dbPostData) {
@@ -54,11 +71,12 @@ router.get('/:id', (req, res) => {
                 });
                 return;
             }
+
             res.json(dbPostData);
         })
         .catch(err => {
             console.log('err', err);
-            res.status(500).json(err);
+            res.status(500).json('THIS IS WHERE YOUR ERROR ISSS!!!!!!', err);
         });
 });
 
@@ -79,14 +97,14 @@ router.post('/', (req, res) => {
 
 // PUT /api/posts/upvote
 router.put('/upvote', (req, res) => {
-    Post.upvote(req.body, {
-            Vote
-        })
-        .then(updatedVoteData => res.json(updatedVoteData))
-        .catch(err => {
-            console.log('err', err);
-            res.status(500).json(err);
-        });
+   if (req.session) {
+       Post.upvote({ ...req.body, user_id: req.session.user_id }, { Vote, Comment, User })
+       .then(updatedVoteData => res.json(updatedVoteData))
+       .catch(err => {
+           console.log('err', err);
+           res.status(500).json(err);
+       });
+   }
 });
 
 // update a post title
