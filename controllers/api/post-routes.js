@@ -75,7 +75,7 @@ router.get('/:id', (req, res) => {
             res.json(dbPostData);
         })
         .catch(err => {
-            console.log('err', err);
+            console.log('err POST', err);
             res.status(500).json('THIS IS WHERE YOUR ERROR ISSS!!!!!!', err);
         });
 });

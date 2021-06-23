@@ -59,7 +59,7 @@ router.get('/post/:id', (req, res) => {
         'post',
         'reference_url',
         'created_at',
-        [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote.count']
+        [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
       ],
       include: [{
           model: Comment,
@@ -93,7 +93,7 @@ router.get('/post/:id', (req, res) => {
       });
     })
     .catch(err => {
-      console.log('err', err);
+      console.log('err HOME', err);
       res.status(500).json(err);
     });
 });
