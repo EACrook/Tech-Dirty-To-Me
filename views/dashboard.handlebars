@@ -1,0 +1,36 @@
+<section>
+    <h2 class="font-bold ">Create Your Own Post</h2>
+    <p>Add a title, post, and a link to what assisted you or your GitHub repository.</p>
+
+    <form class="new-post-form">
+        <div>
+            <label for="post-title">Title</label>
+            <input type="text" id="post-title" name="post-title" />
+        </div>
+        <div>
+            <label for="post-body">Post</label>
+            <input type="text" id="post-body" name="post-body" />
+        </div>
+        <div>
+            <label for="reference-url">Link</label>
+            <input id="reference-url" name="reference-url" />
+        </div>
+        <button type="submit" class="btn">Make Post</button>
+    </form>
+
+    {{#if posts.length}}
+    <section>
+        <h2>Your Past Posts</h2>
+        <ol>
+            {{#each posts as |post|}}
+            <li>
+                {{> post-info post}}
+                <a href="/dashboard/edit/{{post.id}}" class="edit-link">Edit post</a>
+            </li>
+            {{/each}}
+        </ol>
+    </section>
+    {{/if}}
+</section>
+
+<script src="/javascript/add-post.js"></script>
